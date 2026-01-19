@@ -3,6 +3,7 @@ type TreeId = string | number;
 export interface TreeItem {
     id: TreeId;
     parent: TreeId | null;
+    label: string;
 }
 
 export class TreeStore<T extends TreeItem> {

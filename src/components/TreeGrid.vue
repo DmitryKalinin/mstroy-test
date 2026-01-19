@@ -18,15 +18,11 @@ import { AgGridVue } from 'ag-grid-vue3';
 
 import { TreeStore, TreeItem } from '@/services/treeStore/index.ts';
 
-interface Item extends TreeItem {
-  label: string;
-}
-
 const props = defineProps<{
-  items: Item[];
+  items: TreeItem[];
 }>();
 
-const store = new TreeStore<Item>(props.items);
+const store = new TreeStore<TreeItem>(props.items);
 
 const rowData = computed(() =>
     store.getAll().map(item => ({
@@ -56,7 +52,7 @@ const columnDefs = [
 
 ];
 
-const getDataPath = (data: Item) =>
+const getDataPath = (data: TreeItem) =>
     store
         .getAllParents(data.id)
         .reverse()
