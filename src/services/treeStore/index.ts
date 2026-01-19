@@ -22,6 +22,19 @@ export class TreeStore<T extends TreeItem> {
         this.childrenMap.set(item.parent, list);
     }
 
+    private unlink(item: T) {
+        if (item.parent === null) return;
+
+        const list = this.childrenMap.get(item.parent);
+
+        if (!list) return;
+
+        this.childrenMap.set(
+            item.parent,
+            list.filter(child => child.id !== item.id)
+        );
+    }
+
     getAll(): T[] {
         return [...this.items];
     }
@@ -67,5 +80,32 @@ export class TreeStore<T extends TreeItem> {
         this.items.push(item);
         this.byId.set(item.id, item);
         this.link(item);
+    }
+
+    updateItem(updated: T): void {
+        const existing = this.byId.get(updated.id);
+        if (!existing) return;
+
+        if (existing.parent !== updated.parent) {
+            this.unlink(existing);
+            existing.parent = updated.parent;
+            this.link(existing);
+        }
+
+        Object.assign(existing, updated);
+    }
+
+    removeItem(id: TreeId): void {
+        const item = this.getItem(id);
+        if (!item) return;
+
+        const toRemove = [item, ...this.getAllChildren(id)];
+
+        toRemove.forEach(el => {
+            this.unlink(el);
+            this.byId.delete(el.id);
+        });
+
+        this.items = this.items.filter(el => this.byId.has(el.id));
     }
 }
