@@ -10,6 +10,12 @@ npm ci
 npm run dev
 ```
 
+### Test
+
+```sh
+npm run test
+```
+
 ### Type-Check, Compile and Minify for Production
 
 ```sh
